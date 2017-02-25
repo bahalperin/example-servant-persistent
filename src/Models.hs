@@ -10,8 +10,12 @@
 
 module Models where
 
+import qualified Control.Applicative as CA (pure, empty)
 import Data.Aeson
+import Data.Aeson.Types (Parser)
 import Data.Text
+import qualified Data.Text.Lazy as TL ( fromStrict, unpack )
+import qualified Data.HashMap.Lazy (lookup)
 
 import Database.Persist.TH
 
@@ -23,12 +27,15 @@ User
   deriving Eq Read Show
 |]
 
+
 instance FromJSON User where
-  parseJSON = withObject "User" $ \ v ->
-    User <$> v .: "name"
-         <*> v .: "age"
+  parseJSON = withObject "User" $ \ object -> do
+    name <- object .: "name"
+    age <- object .: "age"
+    return $ User name age
 
 instance ToJSON User where
   toJSON (User name age) =
     object [ "name" .= name
-           , "age"  .= age  ]
+           , "age"  .= age
+           ]

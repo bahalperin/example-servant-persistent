@@ -3,6 +3,7 @@
 module AppSpec where
 
 import           Api
+import           Api.Json (jsonApi)
 import           App
 
 import           Control.Exception (throwIO, ErrorCall(..))
@@ -23,16 +24,17 @@ import           Test.Mockery.Directory
 
 userAdd :: _
 userGet :: Text -> Manager -> BaseUrl -> ClientM (Maybe User)
-userAdd :<|> userGet = client api
+usersGet :: Manager -> BaseUrl -> ClientM [User]
+userAdd :<|> userGet :<|> usersGet = client jsonApi
 
 spec :: Spec
 spec = do
   around withApp $ do
-    describe "/user/get" $ do
+    describe "/api/user/get" $ do
       it "returns Nothing for non-existing users" $ \ port -> do
         try port (userGet "foo") `shouldReturn` Nothing
 
-    describe "/user/add" $ do
+    describe "/api/user/add" $ do
       it "allows to add a user" $ \ port -> do
         let user = User "Alice" 1
         id <- try port (userAdd user)
@@ -49,6 +51,10 @@ spec = do
         let a = User "Alice" 1
         id <- try port (userAdd a)
         try port (userAdd a) `shouldReturn` Nothing
+
+    describe "/api/users" $ do
+      it "returns empty list when there are no users" $ \ port -> do
+        try port usersGet `shouldReturn` []
 
 withApp :: (Int -> IO a) -> IO a
 withApp action =

@@ -15,19 +15,29 @@ executable example-servant-persistent
   other-modules:       Api
                      , App
                      , Models
+                     , Api.Json
+                     , Api.Docs
+                     , Api.StaticFiles
   build-depends:       base >=4.8 && <4.9
                      , aeson
+                     , blaze-html
+                     , blaze-markup
+                     , bytestring
+                     , http-types
                      , monad-logger
                      , persistent
                      , persistent-template
                      , persistent-sqlite
                      , servant
+                     , servant-docs
                      , servant-server
+                     , servant-blaze
                      , string-conversions
                      , text
                      , transformers
                      , wai
                      , warp
+                     , unordered-containers
   hs-source-dirs:      src
   default-language:    Haskell2010
 
@@ -40,9 +50,15 @@ test-suite spec
                      , App
                      , Models
                      , AppSpec
+                     , Api.Json
+                     , Api.Docs
+                     , Api.StaticFiles
   build-depends:       base >=4.8 && <4.9
                      , hspec
                      , aeson
+                     , blaze-html
+                     , blaze-markup
+                     , bytestring
                      , persistent
                      , monad-logger
                      , persistent-template
@@ -50,11 +66,15 @@ test-suite spec
                      , transformers
                      , wai
                      , servant
+                     , servant-blaze
                      , servant-client
+                     , servant-docs
                      , servant-server
                      , string-conversions
                      , warp
                      , http-client
+                     , http-types
                      , text
                      , mockery
+                     , unordered-containers
   default-language:    Haskell2010
