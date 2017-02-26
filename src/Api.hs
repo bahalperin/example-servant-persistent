@@ -1,19 +1,19 @@
 {-# LANGUAGE DataKinds         #-}
-{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE LambdaCase        #-}
+{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TypeFamilies      #-}
 {-# LANGUAGE TypeOperators     #-}
 
 module Api (Api, api) where
 
-import Data.Proxy
+import           Data.Proxy
 
-import Servant.API
+import           Servant.API
 
-import Api.Json (JsonApi, jsonApi)
-import Api.StaticFiles (StaticFilesApi)
-import Api.Docs (apiDocs)
+import           Api.Docs        (apiDocs)
+import           Api.Json        (JsonApi, jsonApi)
+import           Api.StaticFiles (StaticFilesApi)
 
 type Api =
   JsonApi

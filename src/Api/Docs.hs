@@ -5,17 +5,25 @@
 {-# LANGUAGE TypeFamilies      #-}
 {-# LANGUAGE TypeOperators     #-}
 
-module Api.Docs (apiDocs) where
+module Api.Docs (apiDocs, serveDocs) where
 
 import Data.Text
+import qualified Data.Text.Lazy (pack)
 
+import qualified Data.ByteString.Lazy as BSL
 import Database.Persist
 import Database.Persist.Sql
 
 import Models
 
+import Servant
 import Servant.API
 import Servant.Docs
+
+import Data.Text.Lazy.Encoding (encodeUtf8)
+import qualified Network.HTTP.Types         as HTTP
+import           Network.Wai
+import           Network.Wai.Handler.Warp as Warp
 
 import Api.Json (jsonApi, JsonApi)
 
@@ -47,3 +55,17 @@ instance ToSample (Key User) where
 
 apiDocs ::  API
 apiDocs = docs jsonApi
+
+serveDocs :: Application
+serveDocs _ respond =
+    respond $ responseLBS HTTP.ok200 [plain] docsBS
+
+
+docsBS :: BSL.ByteString
+docsBS = encodeUtf8
+       . Data.Text.Lazy.pack
+       . markdown
+       $ docsWithIntros [intro] jsonApi
+  where intro = DocIntro "Servant Example App" ["This is the documentation for the Servant Example App API.", "Enjoy!"]
+
+plain = ("Content-Type", "text/plain")
